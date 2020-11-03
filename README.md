@@ -1,1 +1,1 @@
-# Repo for My Fullstack Application using React, GraphQL, TypeScript. 
+# Repo for My Fullstack Application using React, GraphQL, TypeScript.
