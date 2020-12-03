@@ -1,6 +1,5 @@
 import { Box } from "@chakra-ui/react";
 import React from 'react';
-import classnames from 'classnames';
 
 export enum WrapperVariations {
     Small = 'small',
