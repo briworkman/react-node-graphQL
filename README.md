@@ -1,6 +1,6 @@
 # Repo for My Fullstack Application using React, GraphQL, TypeScript.
 
-Includes the follow technologies:
+Includes the following technologies:
 
 - React
 - TypeScript
