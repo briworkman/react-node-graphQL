@@ -19,7 +19,7 @@ export const validateRegister = (options: UsernamePasswordInput) => {
     if (options.username.length <= 2) {
         return [{
             field: 'username',
-            message: 'length must be greateer than 2'
+            message: 'length must be greater than 2'
         }]
 
     }
@@ -27,7 +27,7 @@ export const validateRegister = (options: UsernamePasswordInput) => {
     if (options.password.length <= 2) {
         return [{
             field: 'password',
-            message: 'length must be greateer than 2'
+            message: 'length must be greater than 2'
         }]
 
     }

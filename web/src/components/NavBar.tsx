@@ -3,6 +3,7 @@ import { Box, Link, Flex, Button } from "@chakra-ui/core";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
+import { teal } from '../utils/constants/colors';
 
 interface NavBarProps { }
 
@@ -21,10 +22,10 @@ export const NavBar: React.FC<NavBarProps> = ({ }) => {
     body = (
       <>
         <NextLink href="/login">
-          <Link mr={2}>login</Link>
+          <Link mr={2} color="white">login</Link>
         </NextLink>
         <NextLink href="/register">
-          <Link>register</Link>
+          <Link color="white">register</Link>
         </NextLink>
       </>
     );
@@ -33,13 +34,13 @@ export const NavBar: React.FC<NavBarProps> = ({ }) => {
     body = (
       <Flex>
         <Box mr={2}>{data.me.username}</Box>
-        <Button onClick={() => logout()} isLoading={logoutFetching} variant="link">logout</Button>
+        <Button onClick={() => logout()} isLoading={logoutFetching} variant="link" color="white">logout</Button>
       </Flex>
     );
   }
 
   return (
-    <Flex bg="tan" p={4}>
+    <Flex bg={teal} color="white" p={4}>
       <Box ml={"auto"}>{body}</Box>
     </Flex>
   );
