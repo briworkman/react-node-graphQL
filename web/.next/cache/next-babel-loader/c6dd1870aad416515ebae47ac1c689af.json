@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const isServer = () => true;","map":{"version":3,"sources":["/Users/brianna.workman/Documents/private-git/react-node-graphQL/web/src/utils/isServer.ts"],"names":["isServer"],"mappings":"AAAA,OAAO,MAAMA,QAAQ,GAAG,UAAjB","sourcesContent":["export const isServer = () => typeof window === 'undefined';"]},"metadata":{},"sourceType":"module"}
