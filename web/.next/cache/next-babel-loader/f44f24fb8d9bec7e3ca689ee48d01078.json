@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const teal = '#319795';","map":{"version":3,"sources":["/Users/brianna.workman/Documents/private-git/react-node-graphQL/web/src/utils/constants/colors.ts"],"names":["teal"],"mappings":"AAAA,OAAO,MAAMA,IAAI,GAAG,SAAb","sourcesContent":["export const teal = '#319795';"]},"metadata":{},"sourceType":"module"}
