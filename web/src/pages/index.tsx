@@ -1,20 +1,24 @@
-import { Box, Heading, Link, Text, Stack, Flex, Button } from "@chakra-ui/core";
+import { Box, Heading, Link, Text, Stack, Flex, Button, Divider, Spinner } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
 import { Layout } from "../components/Layout";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from 'next/link';
-import React from "react";
+import React, { useState } from "react";
 
 const Index = () => {
+  const [variables, setVariables] = useState({limit: 10, cursor: null as null | string})
+
   const [{ data, fetching }] = usePostsQuery({
-    variables: {
-      limit: 10,
-    },
+    variables
   });
 
   if(!fetching && !data) {
-    return <div>oops! It looks like something went wrong 😕</div>
+    return <Flex justify='center' mt={6}>
+            <Text fontSize='xl'>
+            Oops! It looks like something went wrong 😕
+            </Text>
+            </Flex>
   }
 
   return (
@@ -28,7 +32,11 @@ const Index = () => {
       </NextLink>
       </Flex>
       <br />
-      {!data && fetching ? <div>loading...</div> : (
+      {!data && fetching ? 
+        <Flex justify="center">
+          <Spinner color="teal" />
+        </Flex>
+       : (
         <div>
           <Stack spacing={8}>
             {data!.posts.map(p => (
@@ -40,7 +48,12 @@ const Index = () => {
             }
           </Stack>
           <Flex>
-            <Button isLoading={fetching} m='auto' my={8}>see more</Button>
+            <Button onClick={() => {
+              setVariables({
+                limit: variables.limit,
+                cursor: data!.posts[data!.posts.length - 1].createdAt
+              })
+            }} isLoading={fetching} m='auto' my={8} variantColor="teal">see more</Button>
           </Flex>
         </div>
       )}

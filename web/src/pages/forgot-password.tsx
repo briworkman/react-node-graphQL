@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading, Text } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from 'react';
@@ -20,7 +20,11 @@ const ForgotPassword: React.FC<{}> = ({ }) => {
                     setIsComplete(true);
                 }}
             >
-                {({ isSubmitting }) => isComplete ? <Box>if an account with that email exists, we sent you an email</Box> : (
+                {({ isSubmitting }) => isComplete ? 
+                    <Box>
+                        <Heading>Success!</Heading>
+                        <Text fontSize="lg">If an account with that email exists, we sent you an email!</Text>
+                    </Box> : (
                     <Form>
                         <InputField
                             name="email"
