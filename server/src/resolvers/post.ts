@@ -1,6 +1,6 @@
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "src/types";
-import { Resolver, Query, Arg, Mutation, InputType, Field, Ctx, UseMiddleware, Int, FieldResolver, Root, ObjectType } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, InputType, Field, Ctx, UseMiddleware, Int, FieldResolver, Root, ObjectType, Info } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
 
@@ -29,6 +29,37 @@ export class PostResolver {
     return root.text.slice(0, 50);
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg('postId', () => Int) postId: number,
+    @Arg('value', () => Int) value: number,
+    @Ctx() {req}: MyContext
+  ) {
+    const isUpvote = value !== -1;
+    const realValue = isUpvote ? 1 : -1
+    const { userId } = req.session
+    // Upvote.insert({
+    //   userId,
+    //   postId,
+    //   value: realValue
+    // });
+    await getConnection().query(`
+    START TRANSACTION;
+
+    insert into upvote ("userId", "postId", value)
+    values (${userId}, ${postId}, ${realValue});
+
+    update post
+    set points = points + ${realValue}
+    where id = ${postId};
+
+    COMMIT;
+    `)
+
+    return true
+  }
+
   @Query(() => PaginatedPosts)
   async posts(
     @Arg('limit', () => Int) limit: number,
@@ -37,17 +68,27 @@ export class PostResolver {
     const realLimit = Math.min(50, limit)
     const realLimitPlusOne = realLimit + 1
 
-    const qb = getConnection()
-      .getRepository(Post)
-      .createQueryBuilder("p")
-      .orderBy('"createdAt"', "DESC")
-      .take(realLimitPlusOne)
+    const replacements: any[] = [realLimitPlusOne];
 
-    if (cursor) {
-      qb.where('"createdAt" < :cursor', { cursor: new Date(parseInt(cursor)) })
+    if(cursor) {
+      replacements.push(new Date(parseInt(cursor)))
     }
 
-    const posts = await qb.getMany()
+    // this will always return the creator to the user every time the query is run, even if the user doesn't
+    // ask for it. But, since we are always going to need the creator when fetching posts, this is fine.
+    const posts = await getConnection().query(`
+      select p.*, 
+      json_build_object(
+        'id', u.id,
+        'username', u.username,
+        'email', u.email
+        ) creator
+      from post p
+      inner join public.user u on u.id = p."creatorId"
+      ${cursor ? `where p."createdAt" < $2` : ''}
+      order by p."createdAt" DESC
+      limit $1
+    `, replacements)
 
     return { posts: posts.slice(0, realLimit), hasMore: posts.length === realLimitPlusOne}
   }
