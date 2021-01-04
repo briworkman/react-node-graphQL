@@ -1,4 +1,4 @@
-import { Box, Heading, Link, Text, Stack, Flex, Button, Divider, Spinner } from "@chakra-ui/core";
+import { Box, Heading, Link, Text, Stack, Flex, Button, Spinner } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
 import { Layout } from "../components/Layout";
 import { usePostsQuery } from "../generated/graphql";
