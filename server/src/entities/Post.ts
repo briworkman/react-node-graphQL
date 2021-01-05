@@ -1,4 +1,5 @@
-import { ObjectType, Field } from "type-graphql";
+import { stripIgnoredCharacters } from "graphql";
+import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,
   Column,
@@ -31,9 +32,13 @@ export class Post extends BaseEntity {
   @Column({type: 'int', default: 0})
   points!: string;
 
+  @Field(() => Int, { nullable: true })
+  voteStatus: number | null;
+
   @Field()
   @Column()
   creatorId: number;
+
 
   @OneToMany(() => Upvote, upvote => upvote.post)
   upvotes: Upvote[];
