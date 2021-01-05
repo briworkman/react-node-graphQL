@@ -1,7 +1,7 @@
-import { Box, Heading, Link, Text, Stack, Flex, Button, Spinner, Icon, IconButton } from "@chakra-ui/core";
+import { Box, Heading, Link, Text, Stack, Flex, Button, Spinner, IconButton } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
 import { Layout } from "../components/Layout";
-import { usePostsQuery } from "../generated/graphql";
+import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from 'next/link';
 import React, { useState } from "react";
@@ -13,6 +13,8 @@ const Index = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables
   });
+
+  const [, deletePost] = useDeletePostMutation()
 
   if(!fetching && !data) {
     return <Flex justify='center' mt={6}>
@@ -31,8 +33,8 @@ const Index = () => {
        : (
         <div>
           <Stack spacing={8}>
-            {data!.posts.posts.map(p => (
-              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+            {data!.posts.posts.map(p => !p ? null : (
+              <Flex key={p.id} p={5} shadow="md" borderWidth="1px" >
                 <UpvoteSection post={p}/>
                 <Box>
                   <NextLink href="/post/[id]" as={`/post/${p.id}`}>
@@ -43,6 +45,14 @@ const Index = () => {
                   <Text>Posted by {p.creator.username}</Text>
                   <Text mt={4}>{p.textSnippet}</Text>
                 </Box>
+                <IconButton 
+                  icon="delete" 
+                  aria-label="Delete Post" 
+                  onClick={() => {deletePost({id: p.id})}} 
+                  ml="auto"
+                  variant="outline"
+                  variantColor="red"
+                />
               </Flex>
             ))
             }
