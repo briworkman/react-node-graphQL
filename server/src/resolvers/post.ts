@@ -1,9 +1,10 @@
 import { isAuth } from "../middleware/isAuth";
 import { MyContext } from "src/types";
-import { Resolver, Query, Arg, Mutation, InputType, Field, Ctx, UseMiddleware, Int, FieldResolver, Root, ObjectType, Info } from "type-graphql";
+import { Resolver, Query, Arg, Mutation, InputType, Field, Ctx, UseMiddleware, Int, FieldResolver, Root, ObjectType } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
 import { Upvote } from "../entities/Upvote";
+import { User } from "../entities/User";
 
 @InputType()
 class PostInput {
@@ -28,6 +29,14 @@ export class PostResolver {
     @Root() root: Post
   ) {
     return root.text.slice(0, 50);
+  }
+
+  @FieldResolver(() => User)
+  creator(
+    @Root() post: Post,
+    @Ctx() { userLoader }: MyContext
+  ) {
+    return userLoader.load(post.creatorId)
   }
 
   @Mutation(() => Boolean)
@@ -114,16 +123,10 @@ export class PostResolver {
     // ask for it. But, since we are always going to need the creator when fetching posts, this is fine.
     const posts = await getConnection().query(`
       select p.*, 
-      json_build_object(
-        'id', u.id,
-        'username', u.username,
-        'email', u.email
-        ) creator,
       ${req.session.userId 
         ? '(select value from upvote where "userId" = $2 and "postId" = p.id) "voteStatus"' 
         : 'null as "voteStatus"'}
       from post p
-      inner join public.user u on u.id = p."creatorId"
       ${cursor ? `where p."createdAt" < $${cursorIdx}` : ''}
       order by p."createdAt" DESC
       limit $1
@@ -134,7 +137,7 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true })
   post(@Arg("id", () => Int) id: number): Promise<Post | undefined> {
-    return Post.findOne(id, {relations: ["creator"]});
+    return Post.findOne(id);
   }
 
   @Mutation(() => Post)
@@ -150,18 +153,22 @@ export class PostResolver {
   }
 
   @Mutation(() => Post, { nullable: true })
+  @UseMiddleware(isAuth)
   async updatePost(
-    @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string
-  ): Promise<Post | null> {
-    const post = await Post.findOne(id);
-    if (!post) {
-      return null;
-    }
-    if (typeof title !== "undefined") {
-      await Post.update({ id }, { title });
-    }
-    return post;
+    @Arg("id", () => Int) id: number,
+    @Arg("title") title: string,
+    @Arg("text") text: string,
+    @Ctx() { req }: MyContext
+    ): Promise<Post | null> {
+      const result = await getConnection()
+      .createQueryBuilder()
+      .update(Post)
+      .set({ title, text })
+      .where('id = :id and "creatorId" = :creatorId', {id, creatorId: req.session.userId })
+      .returning("*")
+      .execute();
+
+      return result.raw[0];
   }
 
   @Mutation(() => Boolean)
@@ -178,7 +185,7 @@ export class PostResolver {
       if (post.creatorId !== req.session.userId){
         throw new Error('not authorized')
       }
-      
+
       await Upvote.delete({postId: id})
       await Post.delete({ id, creatorId: req.session.userId });
       return true;

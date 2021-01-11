@@ -1,4 +1,3 @@
-import { stripIgnoredCharacters } from "graphql";
 import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,

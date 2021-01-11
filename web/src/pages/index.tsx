@@ -1,7 +1,7 @@
 import { Box, Heading, Link, Text, Stack, Flex, Button, Spinner, IconButton } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
 import { Layout } from "../components/Layout";
-import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
+import { useDeletePostMutation, useMeQuery, usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from 'next/link';
 import React, { useState } from "react";
@@ -10,6 +10,7 @@ import { UpvoteSection } from "../components/UpvoteSection";
 const Index = () => {
   const [variables, setVariables] = useState({limit: 15, cursor: null as null | string})
 
+  const [{data: meData}] = useMeQuery();
   const [{ data, fetching }] = usePostsQuery({
     variables
   });
@@ -45,14 +46,27 @@ const Index = () => {
                   <Text>Posted by {p.creator.username}</Text>
                   <Text mt={4}>{p.textSnippet}</Text>
                 </Box>
-                <IconButton 
-                  icon="delete" 
-                  aria-label="Delete Post" 
-                  onClick={() => {deletePost({id: p.id})}} 
-                  ml="auto"
-                  variant="outline"
-                  variantColor="red"
-                />
+                {meData?.me?.id !== p.creator.id ? null :
+                <Box ml="auto">
+                  <NextLink href="/post/edit/[id]" as={`/post/edit/${p.id}`}>
+                    <IconButton 
+                      as={Link}
+                      icon="edit" 
+                      aria-label="Edit Post" 
+                      mr={2} 
+                      variant="outline"
+                      variantColor="teal"
+                    />
+                  </NextLink>
+                  <IconButton 
+                    icon="delete" 
+                    aria-label="Delete Post" 
+                    onClick={() => {deletePost({id: p.id})}} 
+                    variant="outline"
+                    variantColor="red"
+                  />
+                </Box>
+                }
               </Flex>
             ))
             }

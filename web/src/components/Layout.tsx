@@ -11,11 +11,11 @@ export const Layout: React.FC<LayoutProps> = ({
     variant
 }) => {
     return (
-        <>
+        <div className='siteWrapper'>
             <NavBar />
             <Wrapper variant={variant}>
                 {children}
             </Wrapper>
-        </>
+        </div>
     );
 }
