@@ -1,6 +1,7 @@
 import {
   Box,
-  Button
+  Button,
+  useToast
 } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
@@ -16,6 +17,7 @@ interface registerProps { }
 
 const Register: React.FC<registerProps> = ({ }) => {
   const router = useRouter();
+  const toast = useToast();
   const [, register] = useRegisterMutation();
   return (
     <Wrapper variant="small">
@@ -25,8 +27,24 @@ const Register: React.FC<registerProps> = ({ }) => {
           const response = await register({ options: values });
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data.register.errors));
+            toast({
+              position: "bottom-left",
+              title: "An error occurred.",
+              description: "Registration unsuccessful.",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            })
           } else if (response.data?.register.user) {
             // worked
+            toast({
+              position: "bottom-left",
+              title: "User Created!",
+              description: "Registration successful.",
+              status: "success",
+              duration: 9000,
+              isClosable: true,
+            })
             router.push("/");
           }
         }}
