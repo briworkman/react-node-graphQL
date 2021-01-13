@@ -1,4 +1,4 @@
-import { Box, Heading, Link, Text, Stack, Flex, Button, Spinner, IconButton } from "@chakra-ui/core";
+import { Box, Link, Text, Stack, Flex, Button, Spinner, IconButton } from "@chakra-ui/core";
 import { withUrqlClient } from "next-urql";
 import { Layout } from "../components/Layout";
 import { useDeletePostMutation, useMeQuery, usePostsQuery } from "../generated/graphql";
@@ -6,6 +6,7 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from 'next/link';
 import React, { useState } from "react";
 import { UpvoteSection } from "../components/UpvoteSection";
+import { UserSection } from "../components/UserSection";
 
 const Index = () => {
   const [variables, setVariables] = useState({limit: 15, cursor: null as null | string})
@@ -35,17 +36,15 @@ const Index = () => {
         <div>
           <Stack spacing={8}>
             {data!.posts.posts.map(p => !p ? null : (
-              <Flex key={p.id} p={5} shadow="md" borderWidth="1px" >
+              <Box key={p.id}>
+              <NextLink href="/post/[id]" as={`/post/${p.id}`} >
+              <Link>
+              <Flex p={5} shadow="md" borderWidth="1px" >
                 <UpvoteSection post={p}/>
-                <Box>
-                  <NextLink href="/post/[id]" as={`/post/${p.id}`}>
-                    <Link>
-                      <Heading fontSize="xl">{p.title}</Heading> 
-                    </Link>
-                  </NextLink>
-                  <Text>Posted by {p.creator.username}</Text>
-                  <Text mt={4}>{p.textSnippet}</Text>
-                </Box>
+                      <Box>
+                        <UserSection post={p}/>
+                        <Text mt={4}>{p.textSnippet}</Text>
+                      </Box>
                 {meData?.me?.id !== p.creator.id ? null :
                 <Box ml="auto">
                   <NextLink href="/post/edit/[id]" as={`/post/edit/${p.id}`}>
@@ -68,6 +67,9 @@ const Index = () => {
                 </Box>
                 }
               </Flex>
+              </Link>
+              </NextLink>
+              </Box>
             ))
             }
           </Stack>
