@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { Box, Button, Flex, Link } from "@chakra-ui/core";
+import { Box, Button, Flex, Link, useToast } from "@chakra-ui/core";
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
 import { useLoginMutation } from "../generated/graphql";
@@ -12,6 +12,7 @@ import NextLink from 'next/link';
 
 const Login: React.FC<{}> = ({ }) => {
   const router = useRouter();
+  const toast = useToast();
   const [, login] = useLoginMutation();
   return (
     <Wrapper variant="small">
@@ -21,6 +22,14 @@ const Login: React.FC<{}> = ({ }) => {
           const response = await login(values);
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
+            toast({
+              position: "bottom-left",
+              title: "An error occurred.",
+              description: "Login unsuccessful.",
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            })
           } else if (response.data?.login.user) {
             if (typeof router.query.next === 'string') {
               router.push(router.query.next)

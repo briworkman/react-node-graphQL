@@ -37,14 +37,6 @@ const Register: React.FC<registerProps> = ({ }) => {
             })
           } else if (response.data?.register.user) {
             // worked
-            toast({
-              position: "bottom-left",
-              title: "User Created!",
-              description: "Registration successful.",
-              status: "success",
-              duration: 9000,
-              isClosable: true,
-            })
             router.push("/");
           }
         }}
