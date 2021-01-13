@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from "@chakra-ui/core";
+import { Box, Button, Flex, useToast } from "@chakra-ui/core";
 import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ import { useIsAuth } from "../utils/useIsAuth";
 
 const CreatePost: React.FC<{}> = ({ }) => {
     const router = useRouter();
+    const toast = useToast();
     useIsAuth()
     const [, createPost] = useCreatePostMutation();
 
@@ -20,9 +21,25 @@ const CreatePost: React.FC<{}> = ({ }) => {
                 initialValues={{ title: "", text: "" }}
                 onSubmit={async (values) => {
                     const { error } = await createPost({ input: values });
-                    console.log(error)
                     if (!error) {
+                        toast({
+                            position: "bottom-left",
+                            title: "Post Created!",
+                            description: "Your post has been successfully created",
+                            status: "success",
+                            duration: 9000,
+                            isClosable: true,
+                          })
                         router.push('/')
+                    } else {
+                        toast({
+                            position: "bottom-left",
+                            title: "An error occurred.",
+                            description: "We were unable to create your post.",
+                            status: "error",
+                            duration: 9000,
+                            isClosable: true,
+                          })
                     }
                 }}
             >
