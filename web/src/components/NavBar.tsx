@@ -1,10 +1,10 @@
-import React from "react";
-import { Box, Link, Flex, Button, Heading } from "@chakra-ui/core";
+import { Box, Button, Flex, Heading, Link } from "@chakra-ui/core";
 import NextLink from "next/link";
+import { useRouter } from 'next/router';
+import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
-import { isServer } from "../utils/isServer";
 import { teal } from '../utils/constants/colors';
-import Router, { useRouter } from 'next/router'
+import { isServer } from "../utils/isServer";
 
 interface NavBarProps { }
 
@@ -40,11 +40,11 @@ export const NavBar: React.FC<NavBarProps> = ({ }) => {
             Create Post
           </Button>
         </NextLink>
-        <Box mr={2}>{data.me.username}</Box>
+        <Box mr={2} color='black'>{data.me.username}</Box>
         <Button onClick={async () => { 
-          await logout();
-          router.reload()
-          }} isLoading={logoutFetching} variant="link" color="white">logout</Button>
+              await logout();
+              router.reload()
+              }} isLoading={logoutFetching} variant="link" color="black">logout</Button>
       </Flex>
     );
   }
