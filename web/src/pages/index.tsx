@@ -33,10 +33,11 @@ const Index = () => {
           <Spinner color="teal" />
         </Flex>
        : (
-        <div>
+         <div className="glass">
+        <div className='postsContainer'>
           <Stack spacing={8}>
             {data!.posts.posts.map(p => !p ? null : (
-              <Box key={p.id}>
+              <Box key={p.id} bg="white" borderRadius="10px">
               <NextLink href="/post/[id]" as={`/post/${p.id}`} >
               <Link>
               <Flex p={5} shadow="md" borderWidth="1px" >
@@ -80,10 +81,11 @@ const Index = () => {
                   limit: variables.limit,
                   cursor: data!.posts.posts[data!.posts.posts.length - 1].createdAt
                 })
-              }} isLoading={fetching} m='auto' my={8} variantColor="teal">
-                see more
+              }} isLoading={fetching} m='auto' my={8}>
+                See More
               </Button>
             </Flex> : null}
+        </div>
         </div>
       )}
     </Layout>

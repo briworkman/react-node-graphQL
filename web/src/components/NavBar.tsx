@@ -3,7 +3,6 @@ import NextLink from "next/link";
 import { useRouter } from 'next/router';
 import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
-import { teal } from '../utils/constants/colors';
 import { isServer } from "../utils/isServer";
 
 interface NavBarProps { }
@@ -40,17 +39,17 @@ export const NavBar: React.FC<NavBarProps> = ({ }) => {
             Create Post
           </Button>
         </NextLink>
-        <Box mr={2} color='black'>{data.me.username}</Box>
+        <Box mr={2} color='white'>{data.me.username}</Box>
         <Button onClick={async () => { 
               await logout();
               router.reload()
-              }} isLoading={logoutFetching} variant="link" color="black">logout</Button>
+              }} isLoading={logoutFetching} variant="link" color="white">logout</Button>
       </Flex>
     );
   }
 
   return (
-    <Flex bg={teal} color="white" p={4} align="center">
+    <Flex color="white" p={4} align="center">
       <NextLink href="/">
         <Link>
           <Heading>LiReddit</Heading>
