@@ -10,7 +10,7 @@ $linear-gradient: linear-gradient(115.35deg, rgba(255, 255, 255, 0.48) 0%, rgba(
     background-size: cover;
 }
 
-.glass {
+.glass, .glass--short, .glass--column {
     border: 1px solid white;
     height: 80vh;
     width: 100%;
@@ -30,6 +30,20 @@ $linear-gradient: linear-gradient(115.35deg, rgba(255, 255, 255, 0.48) 0%, rgba(
         background: $linear-gradient;
         border-radius: 10px;
     }
+}
+
+.glass--column {
+    flex-direction: column;
+}
+
+.glass--short {
+    padding: 0;
+    height: 300px;
+    align-items: center;
+}
+
+form {
+    width: 90%;
 }
 
 .postsContainer {

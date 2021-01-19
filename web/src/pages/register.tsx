@@ -8,7 +8,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../components/InputField";
-import { Wrapper } from "../components/Wrapper";
+import { Layout } from "../components/Layout";
 import { useRegisterMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { toErrorMap } from "../utils/toErrorMap";
@@ -20,7 +20,8 @@ const Register: React.FC<registerProps> = ({ }) => {
   const toast = useToast();
   const [, register] = useRegisterMutation();
   return (
-    <Wrapper variant="small">
+    <Layout variant="small">
+      <div className="glass--short">
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
@@ -68,14 +69,14 @@ const Register: React.FC<registerProps> = ({ }) => {
               mt={4}
               type="submit"
               isLoading={isSubmitting}
-              variantColor="teal"
             >
               register
             </Button>
           </Form>
         )}
       </Formik>
-    </Wrapper>
+      </div>
+    </Layout>
   );
 };
 

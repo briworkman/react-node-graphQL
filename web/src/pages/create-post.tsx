@@ -17,6 +17,7 @@ const CreatePost: React.FC<{}> = ({ }) => {
 
     return (
         <Layout variant='small'>
+            <div className="glass--short">
             <Formik
                 initialValues={{ title: "", text: "" }}
                 onSubmit={async (values) => {
@@ -49,6 +50,7 @@ const CreatePost: React.FC<{}> = ({ }) => {
                             name="title"
                             placeholder="Title"
                             label="Title"
+                            color="white"
                         />
                         <Box mt={4}>
                             <InputField
@@ -56,6 +58,7 @@ const CreatePost: React.FC<{}> = ({ }) => {
                                 name="text"
                                 placeholder="What would you like to share?"
                                 label="Body"
+                                color="white"
                             />
                         </Box>
                         <Flex align={'center'}>
@@ -63,14 +66,14 @@ const CreatePost: React.FC<{}> = ({ }) => {
                                 mt={4}
                                 type="submit"
                                 isLoading={isSubmitting}
-                                variantColor="teal"
                             >
-                                share!
+                                Share!
                             </Button>
                         </Flex>
                     </Form>
                 )}
             </Formik>
+            </div>
         </Layout>
     );
 }

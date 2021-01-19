@@ -1,21 +1,22 @@
-import React from "react";
-import { Formik, Form } from "formik";
 import { Box, Button, Flex, Link, useToast } from "@chakra-ui/core";
-import { Wrapper } from "../components/Wrapper";
-import { InputField } from "../components/InputField";
-import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/toErrorMap";
-import { useRouter } from "next/router";
+import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import NextLink from 'next/link';
+import { useRouter } from "next/router";
+import React from "react";
+import { InputField } from "../components/InputField";
+import { Layout } from "../components/Layout";
+import { useLoginMutation } from "../generated/graphql";
+import { createUrqlClient } from "../utils/createUrqlClient";
+import { toErrorMap } from "../utils/toErrorMap";
 
 const Login: React.FC<{}> = ({ }) => {
   const router = useRouter();
   const toast = useToast();
   const [, login] = useLoginMutation();
   return (
-    <Wrapper variant="small">
+    <Layout variant='small'>
+      <div className="glass--short">
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
@@ -59,7 +60,6 @@ const Login: React.FC<{}> = ({ }) => {
                 mt={4}
                 type="submit"
                 isLoading={isSubmitting}
-                variantColor="teal"
               >
                 login
             </Button>
@@ -70,7 +70,8 @@ const Login: React.FC<{}> = ({ }) => {
           </Form>
         )}
       </Formik>
-    </Wrapper>
+      </div>
+    </Layout>
   );
 };
 

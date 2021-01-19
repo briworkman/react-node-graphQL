@@ -24,19 +24,24 @@ const EditPost = () => {
     if (fetching) {
         return(
             <Layout>
+                <div className="glass--short">
                 <div>loading...</div>
+                </div>
             </Layout>
         )
     }
 
     if(!data?.post) {
         return <Layout>
+            <div className="glass--short">
             <div>This post could not be found.</div>
+            </div>
         </Layout>
     }
 
         return (
             <Layout variant='small'>
+                <div className="glass--short">
             <Formik
                 initialValues={{ title: data.post.title, text: data.post.text }}
                 onSubmit={async (values) => {
@@ -64,7 +69,6 @@ const EditPost = () => {
                                 mt={4}
                                 type="submit"
                                 isLoading={isSubmitting}
-                                variantColor="teal"
                             >
                                 Update Post!
                             </Button>
@@ -72,6 +76,7 @@ const EditPost = () => {
                     </Form>
                 )}
             </Formik>
+            </div>
         </Layout>
         );
 }
